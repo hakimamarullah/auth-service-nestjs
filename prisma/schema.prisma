@@ -12,3 +12,40 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int         @id() @default(autoincrement())
+  username  String      @unique @db.VarChar(30)
+  email     String      @unique @db.VarChar(60)
+  enabled   Boolean     @default(true)
+  password  String      @db.VarChar(255)
+  phone     String?     @db.VarChar(16)
+  UserRoles UserRoles[]
+
+  @@map("users")
+}
+
+model UserRoles {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  role       Role     @relation(fields: [roleId], references: [id])
+  roleId     Int
+  assignedAt DateTime @default(now())
+  assignedBy String?  @db.VarChar(30)
+  updatedAt  DateTime @updatedAt() @map("updated_at")
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Role {
+  id          Int         @id() @default(autoincrement())
+  name        String      @db.VarChar(255)
+  description String?     @db.VarChar(255)
+  createBy    String?     @db.VarChar(30)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @updatedAt() @map("updated_at")
+  UserRoles   UserRoles[]
+
+  @@map("role")
+}
