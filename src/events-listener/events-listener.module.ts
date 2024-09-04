@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { EventsListenerService } from './events-listener.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { UsersService } from '../users/users.service';
+import { PrismadbService } from '../prismadb/prismadb.service';
+
+@Module({
+  providers: [EventsListenerService, UsersService, PrismadbService],
+  imports: [EventEmitterModule.forRoot({ global: true })],
+  exports: [EventsListenerService],
+})
+export class EventsListenerModule {}

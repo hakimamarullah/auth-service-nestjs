@@ -20,15 +20,18 @@ model User {
   enabled   Boolean     @default(true)
   password  String      @db.VarChar(255)
   phone     String?     @db.VarChar(16)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @default(now()) @updatedAt() @map("updated_at")
+  lastLogin DateTime?   @default(now()) @map("last_login")
   UserRoles UserRoles[]
 
   @@map("users")
 }
 
 model UserRoles {
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
-  role       Role     @relation(fields: [roleId], references: [id])
+  role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
   roleId     Int
   assignedAt DateTime @default(now())
   assignedBy String?  @db.VarChar(30)
@@ -40,7 +43,7 @@ model UserRoles {
 
 model Role {
   id          Int         @id() @default(autoincrement())
-  name        String      @db.VarChar(255)
+  name        String      @unique @db.VarChar(255)
   description String?     @db.VarChar(255)
   createBy    String?     @db.VarChar(30)
   createdAt   DateTime    @default(now()) @map("created_at")

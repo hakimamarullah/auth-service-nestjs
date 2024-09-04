@@ -1,0 +1,11 @@
+services:
+  auth-service:
+    build: .
+    restart: on-failure
+    deploy:
+      mode: replicated
+      replicas: 2
+    env_file:
+      -   .env.docker
+    networks:
+      - micro-docker

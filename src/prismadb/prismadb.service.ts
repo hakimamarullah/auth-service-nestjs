@@ -1,16 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
-import process from 'process';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import * as process from 'process';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismadbService extends PrismaClient {
+export class PrismadbService extends PrismaClient implements OnModuleInit {
   private readonly maxRetries: number;
   private readonly delay: number;
   private readonly logger = new Logger(PrismadbService.name);
 
   constructor(private readonly configService: ConfigService) {
     super();
+
     this.maxRetries = this.configService.get('PRISMA_MAX_RETRIES', 5);
     this.delay = this.configService.get('PRISMA_RETRY_INTERVAL', 2000);
   }
