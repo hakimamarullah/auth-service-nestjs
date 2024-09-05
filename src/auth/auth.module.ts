@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CachingService } from '../caching/caching.service';
 
 import { JwtConfigService } from './jwt-config.service';
+import { RolesService } from '../roles/roles.service';
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { JwtConfigService } from './jwt-config.service';
     PrismadbService,
     CachingService,
     JwtConfigService,
+    RolesService,
   ],
   controllers: [AuthController],
   imports: [

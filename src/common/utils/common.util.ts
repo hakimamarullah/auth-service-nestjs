@@ -143,3 +143,27 @@ export const getPrismaError = (error: any): PrismaError => {
       };
   }
 };
+
+/**
+ * Converts a wildcard pattern to a regular expression.
+ * @param pattern The wildcard pattern (e.g., '/api/somepath/*')
+ * @returns A regular expression that matches the pattern.
+ */
+export const convertPatternToRegExp = (pattern: string): RegExp => {
+  const escapedPattern = pattern
+    .replace(/([.*+?^${}()|[\]\\])/g, '\\$1') // Escape special characters
+    .replace(/:\w+/g, '\\w+') // Convert ':id' or ':parameter' to '\d+' for numeric values
+    .replace(/\\\*/g, '.*') // Replace '*' with '.*'
+    .replace(/\\\?/g, '.') // Optionally replace '?' with '.'
+    .replace(/\\\[/g, '[') // Unescape '[' for character classes
+    .replace(/\\]/g, ']') // Unescape ']' for character classes
+    .replace(/\\\(/g, '(') // Unescape '(' for capturing groups if needed
+    .replace(/\\\)/g, ')'); // Unescape ')' for capturing groups if needed
+
+  // Return a RegExp object with anchors to match the entire string
+  return new RegExp(`^${escapedPattern}$`);
+};
+
+export const getUsername = (request: any) => {
+  return request?.user?.username;
+};

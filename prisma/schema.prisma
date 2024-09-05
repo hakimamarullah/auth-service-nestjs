@@ -42,13 +42,27 @@ model UserRoles {
 }
 
 model Role {
-  id          Int         @id() @default(autoincrement())
-  name        String      @unique @db.VarChar(255)
-  description String?     @db.VarChar(255)
-  createBy    String?     @db.VarChar(30)
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @default(now()) @updatedAt() @map("updated_at")
+  id          Int           @id() @default(autoincrement())
+  name        String        @unique @db.VarChar(255)
+  description String?       @db.VarChar(255)
+  createBy    String?       @db.VarChar(30)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @default(now()) @updatedAt() @map("updated_at")
   UserRoles   UserRoles[]
+  PathAllowed PathAllowed[]
 
   @@map("role")
+}
+
+model PathAllowed {
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    Int
+  path      String   @db.VarChar(255)
+  createBy  String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt() @map("updated_at")
+
+  @@id([roleId, path])
+  @@index([path])
+  @@map("path_allowed")
 }

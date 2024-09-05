@@ -6,8 +6,10 @@ import { UserRegisterRequest } from '../users/dto/request/userRegister.request';
 import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
 import { SignInRequest } from './dto/request/signIn.request';
 import { TokenResponse } from './dto/response/token.response';
+import { Public } from './decorator/public.decorator';
 
 @ApiTags('AuthController')
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(
