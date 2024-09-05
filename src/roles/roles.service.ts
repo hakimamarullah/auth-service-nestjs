@@ -7,6 +7,8 @@ import { CacheConstant } from '../caching/cache.constant';
 import { PathDto } from './dto/request/pathDto.request';
 import { convertPatternToRegExp } from '../common/utils/common.util';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventConstant } from '../events-listener/event-key.constant';
 
 @Injectable()
 export class RolesService implements OnApplicationBootstrap {
@@ -14,6 +16,7 @@ export class RolesService implements OnApplicationBootstrap {
   constructor(
     private prismadbService: PrismadbService,
     private cachingService: CachingService,
+    private emitter: EventEmitter2,
   ) {}
 
   async createBatchRoles(username: string, roleDtos: CreateRoleRequest[]) {
@@ -75,7 +78,7 @@ export class RolesService implements OnApplicationBootstrap {
         },
       },
     });
-
+    this.emitter.emit(EventConstant.EventKey.RELOAD_ALL_PATHS);
     return BaseResponse.getSuccessResponse('Success');
   }
 

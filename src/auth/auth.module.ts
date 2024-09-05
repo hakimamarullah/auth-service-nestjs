@@ -9,6 +9,7 @@ import { CachingService } from '../caching/caching.service';
 
 import { JwtConfigService } from './jwt-config.service';
 import { RolesService } from '../roles/roles.service';
+import { JwtController } from './jwt.controller';
 
 @Module({
   providers: [
@@ -19,7 +20,7 @@ import { RolesService } from '../roles/roles.service';
     JwtConfigService,
     RolesService,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, JwtController],
   imports: [
     UsersModule,
     JwtModule.registerAsync({

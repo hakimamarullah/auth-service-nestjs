@@ -9,7 +9,16 @@ export class JwtConfigService implements JwtOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createJwtOptions(): Promise<JwtModuleOptions> | JwtModuleOptions {
-    const config = {
+    const config = this.loadJwtOptions();
+    if (!config.secret || !config.signOptions) {
+      this.logger.fatal('JWT_SECRET or JWT_EXPIRES is not defined');
+      process.exit(1);
+    }
+    return config;
+  }
+
+  loadJwtOptions(): JwtModuleOptions {
+    return {
       secret: this.configService.get<string>('JWT_SECRET'),
       signOptions: { expiresIn: this.configService.get<string>('JWT_EXPIRES') },
       verifyOptions: {
@@ -17,10 +26,5 @@ export class JwtConfigService implements JwtOptionsFactory {
       },
       global: true,
     };
-    if (!config.secret || !config.signOptions) {
-      this.logger.fatal('JWT_SECRET or JWT_EXPIRES is not defined');
-      process.exit(1);
-    }
-    return config;
   }
 }
