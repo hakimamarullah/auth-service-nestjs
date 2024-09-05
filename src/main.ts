@@ -39,7 +39,7 @@ async function bootstrap() {
       configService.get<string>('SWAGGER_DESCRIPTION', 'Auth-Service API'),
     )
     .setVersion(configService.get<string>('APP_VERSION', '1.0'))
-    .addSecurity('bearer', {
+    .addBearerAuth({
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',

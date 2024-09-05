@@ -11,7 +11,7 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
 import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
@@ -21,7 +21,7 @@ import { RoleSimpleResponse } from './dto/response/roleSimple.response';
 import { getUsername } from '../common/utils/common.util';
 
 @ApiTags('RolesController')
-@ApiSecurity('bearer')
+@ApiBearerAuth()
 @Controller('roles')
 export class RolesController {
   constructor(private rolesService: RolesService) {}
