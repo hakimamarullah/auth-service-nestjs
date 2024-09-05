@@ -55,12 +55,13 @@ model Role {
 }
 
 model PathAllowed {
-  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId    Int
-  path      String   @db.VarChar(255)
-  createBy  String?  @db.VarChar(30)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt() @map("updated_at")
+  role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      Int
+  path        String   @db.VarChar(255)
+  description String?  @db.VarChar(500)
+  createBy    String?  @db.VarChar(30)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt() @map("updated_at")
 
   @@id([roleId, path])
   @@index([path])
