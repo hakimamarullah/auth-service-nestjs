@@ -5,13 +5,20 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Param,
   ParseArrayPipe,
   ParseIntPipe,
   Post,
   Req,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
 import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
@@ -19,6 +26,7 @@ import { PathDto } from './dto/request/pathDto.request';
 import { Request } from 'express';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
 import { getUsername } from '../common/utils/common.util';
+import { BaseResponse } from '../dto/baseResponse.dto';
 
 @ApiTags('RolesController')
 @ApiBearerAuth()
@@ -59,5 +67,24 @@ export class RolesController {
   @ApiBody({ type: PathDto })
   async getPathsByRoleId(@Body() pathDto: PathDto, @Req() req: Request) {
     return await this.rolesService.addAllPathToRole(getUsername(req), pathDto);
+  }
+
+  @Get('paths')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get All Paths for all roles' })
+  @ApiBaseResponse({ model: Map<string, any> })
+  async getPathsForAllRoles() {
+    const data = await this.rolesService.loadAllPaths((d) => d);
+    new Logger(RolesController.name).log(JSON.stringify(data));
+    return BaseResponse.getSuccessResponse<{ [p: string]: string[] }>(data);
+  }
+
+  @Get('user/:userId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get user roles by user id' })
+  @ApiBaseResponse({ model: Map<string, any> })
+  @ApiParam({ name: 'userId', type: Number })
+  async getUserRoles(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.rolesService.getUserRoles(userId);
   }
 }

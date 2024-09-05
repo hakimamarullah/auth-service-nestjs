@@ -44,7 +44,9 @@ export class RolesService implements OnApplicationBootstrap {
     return BaseResponse.getSuccessResponse<any>(role);
   }
 
-  async loadAllPaths(): Promise<{ [roleName: string]: string[] }> {
+  async loadAllPaths<T>(
+    transformer?: (data: any) => T,
+  ): Promise<{ [roleName: string]: T[] }> {
     // Fetch all roles with the given names and include PathAllowed
     const roles = await this.prismadbService.role.findMany({
       include: { PathAllowed: true }, // Include the related PathAllowed records
@@ -53,12 +55,15 @@ export class RolesService implements OnApplicationBootstrap {
     // Map roles to their allowed paths
     const pathsByRoleName = roles.reduce(
       (acc, role: any) => {
-        acc[role.name] = role.PathAllowed.map((pathAllowed: any) =>
-          convertPatternToRegExp(pathAllowed.path),
-        );
+        acc[role.name] = role.PathAllowed.map((pathAllowed: any) => {
+          if (transformer) {
+            return transformer(pathAllowed.path);
+          }
+          return pathAllowed.path;
+        });
         return acc;
       },
-      {} as { [roleName: string]: string[] },
+      {} as { [roleName: string]: T[] },
     );
     await this.cachingService.set(
       `${CacheConstant.CacheKey.ROLES_PATHS}`,
@@ -82,9 +87,22 @@ export class RolesService implements OnApplicationBootstrap {
     return BaseResponse.getSuccessResponse('Success');
   }
 
+  async getUserRoles(userId: number) {
+    const roles = await this.prismadbService.userRoles.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        role: true,
+      },
+    });
+    const data = roles.map((role: any) => role.role?.name);
+    return BaseResponse.getSuccessResponse(data);
+  }
+
   async onApplicationBootstrap(): Promise<any> {
     this.logger.log(`Loading roles from database...`);
-    await this.loadAllPaths();
+    await this.loadAllPaths(convertPatternToRegExp);
     this.logger.log(`Loaded roles from database.`);
   }
 }
