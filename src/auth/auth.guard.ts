@@ -70,15 +70,15 @@ export class AuthGuard implements CanActivate {
   }
 
   private async getAllPaths() {
-    const rolesPaths = await this.cachingService.get<{
+    let rolesPaths = await this.cachingService.get<{
       [roleName: string]: RegExp[];
     }>(CacheConstant.CacheKey.ROLES_PATHS);
     if (!rolesPaths) {
-      await this.roleService.loadAllPaths(convertPatternToRegExp);
+      rolesPaths = await this.roleService.loadAllPaths<RegExp>(
+        convertPatternToRegExp,
+      );
     }
-    return await this.cachingService.get<{ [roleName: string]: RegExp[] }>(
-      CacheConstant.CacheKey.ROLES_PATHS,
-    );
+    return rolesPaths;
   }
 
   private async getPathPatternSet(

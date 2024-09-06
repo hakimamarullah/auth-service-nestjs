@@ -65,7 +65,7 @@ export class RolesService implements OnApplicationBootstrap {
       },
       {} as { [roleName: string]: T[] },
     );
-    await this.cachingService.set(
+    await this.cachingService.set<{ [roleName: string]: T[] }>(
       `${CacheConstant.CacheKey.ROLES_PATHS}`,
       pathsByRoleName,
     );

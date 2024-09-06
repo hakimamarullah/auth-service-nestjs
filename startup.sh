@@ -17,7 +17,7 @@ check_db() {
   local retries=30
   local wait_time=5
   local host="localhost"
-  local port="5440"
+  local port="5439"
 
   echo "Checking if the database is up..."
 
@@ -40,7 +40,7 @@ check_db() {
 cleanup
 
 # Set environment variables
-export DATABASE_URL="postgresql://micro:micro@localhost:5440/micro?schema=auth&connection_limit=5&pool_timeout=10"
+export DATABASE_URL="postgresql://micro:micro@localhost:5439/micro?schema=auth&connection_limit=5&pool_timeout=10"
 
 
 

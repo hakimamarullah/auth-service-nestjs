@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { UsersService } from '../users/users.service';
 import { EventConstant } from './event-key.constant';
 import { RolesService } from '../roles/roles.service';
+import { convertPatternToRegExp } from '../common/utils/common.util';
 
 @Injectable()
 export class EventsListenerService {
@@ -19,7 +20,7 @@ export class EventsListenerService {
 
   @OnEvent(EventConstant.EventKey.RELOAD_ALL_PATHS, { async: true })
   async reloadAllPaths() {
-    await this.rolesService.loadAllPaths();
+    await this.rolesService.loadAllPaths<RegExp>(convertPatternToRegExp);
     this.logger.log(`All Paths Reloaded.`);
   }
 }
