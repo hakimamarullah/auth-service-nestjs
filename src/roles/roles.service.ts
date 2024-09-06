@@ -52,7 +52,7 @@ export class RolesService implements OnModuleInit {
     });
 
     // Map roles to their allowed paths
-    const pathsByRoleName = roles.reduce(
+    return roles.reduce(
       (acc, role: any) => {
         acc[role.name] = role.PathAllowed.map((pathAllowed: any) => {
           if (transformer) {
@@ -64,8 +64,6 @@ export class RolesService implements OnModuleInit {
       },
       {} as { [roleName: string]: T[] },
     );
-    this.emitter.emit(EventConstant.EventKey.RELOAD_ALL_PATHS);
-    return pathsByRoleName;
   }
 
   async addAllPathToRole(username: string, pathDto: PathDto) {
@@ -98,7 +96,7 @@ export class RolesService implements OnModuleInit {
 
   async onModuleInit(): Promise<any> {
     this.logger.log(`Loading roles from database...`);
-    await this.loadAllPaths(convertPatternToRegExp);
+    this.emitter.emit(EventConstant.EventKey.RELOAD_ALL_PATHS);
     this.logger.log(`Loaded roles from database.`);
   }
 }
