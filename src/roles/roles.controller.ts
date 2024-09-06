@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Logger,
   Param,
   ParseArrayPipe,
   ParseIntPipe,
@@ -75,7 +74,6 @@ export class RolesController {
   @ApiBaseResponse({ model: Map<string, any> })
   async getPathsForAllRoles() {
     const data = await this.rolesService.loadAllPaths((d) => d);
-    new Logger(RolesController.name).log(JSON.stringify(data));
     return BaseResponse.getSuccessResponse<{ [p: string]: string[] }>(data);
   }
 

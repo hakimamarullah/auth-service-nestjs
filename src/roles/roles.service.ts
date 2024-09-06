@@ -3,7 +3,6 @@ import { PrismadbService } from '../prismadb/prismadb.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
 import { BaseResponse } from '../dto/baseResponse.dto';
 import { CachingService } from '../caching/caching.service';
-import { CacheConstant } from '../caching/cache.constant';
 import { PathDto } from './dto/request/pathDto.request';
 import { convertPatternToRegExp } from '../common/utils/common.util';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
@@ -65,10 +64,7 @@ export class RolesService implements OnApplicationBootstrap {
       },
       {} as { [roleName: string]: T[] },
     );
-    await this.cachingService.set<{ [roleName: string]: T[] }>(
-      `${CacheConstant.CacheKey.ROLES_PATHS}`,
-      pathsByRoleName,
-    );
+    this.emitter.emit(EventConstant.EventKey.RELOAD_ALL_PATHS);
     return pathsByRoleName;
   }
 
