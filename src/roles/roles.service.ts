@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
 import { BaseResponse } from '../dto/baseResponse.dto';
@@ -10,7 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventConstant } from '../events-listener/event-key.constant';
 
 @Injectable()
-export class RolesService implements OnApplicationBootstrap {
+export class RolesService implements OnModuleInit {
   private logger: Logger = new Logger(RolesService.name);
   constructor(
     private prismadbService: PrismadbService,
@@ -96,7 +96,7 @@ export class RolesService implements OnApplicationBootstrap {
     return BaseResponse.getSuccessResponse(data);
   }
 
-  async onApplicationBootstrap(): Promise<any> {
+  async onModuleInit(): Promise<any> {
     this.logger.log(`Loading roles from database...`);
     await this.loadAllPaths(convertPatternToRegExp);
     this.logger.log(`Loaded roles from database.`);

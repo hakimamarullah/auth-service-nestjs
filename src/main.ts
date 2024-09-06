@@ -51,8 +51,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/swagger', app, document, {
     jsonDocumentUrl: 'swagger/json',
+    useGlobalPrefix: true,
   });
 
   app.listen(port).then(() => logger.log(`Server started on port ${port}`));
 }
-bootstrap();
+(async () => await bootstrap())();
