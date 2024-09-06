@@ -33,6 +33,7 @@ export class UsersService {
             },
           },
         ],
+        enabled: true,
       },
       include: {
         UserRoles: {

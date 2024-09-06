@@ -30,11 +30,11 @@ model User {
 
 model UserRoles {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     Int
+  userId     Int      @map("user_id")
   role       Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId     Int
-  assignedAt DateTime @default(now())
-  assignedBy String?  @db.VarChar(30)
+  roleId     Int      @map("role_id")
+  assignedAt DateTime @default(now()) @map("assigned_at")
+  assignedBy String?  @map("assigned_by") @db.VarChar(30)
   updatedAt  DateTime @updatedAt() @map("updated_at")
 
   @@id([userId, roleId])
@@ -45,7 +45,7 @@ model Role {
   id          Int           @id() @default(autoincrement())
   name        String        @unique @db.VarChar(255)
   description String?       @db.VarChar(255)
-  createBy    String?       @db.VarChar(30)
+  createBy    String?       @map("create_by") @db.VarChar(30)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @default(now()) @updatedAt() @map("updated_at")
   UserRoles   UserRoles[]
@@ -56,10 +56,10 @@ model Role {
 
 model PathAllowed {
   role        Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId      Int
+  roleId      Int      @map("role_id")
   path        String   @db.VarChar(255)
   description String?  @db.VarChar(500)
-  createBy    String?  @db.VarChar(30)
+  createBy    String?  @map("create_by") @db.VarChar(30)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt() @map("updated_at")
 
