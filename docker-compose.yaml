@@ -1,6 +1,7 @@
 services:
   auth-service:
-    build: .
+    image: hakimamarullah/auth-service-nestjs:v1.0.0
+    container_name: auth-service
     restart: on-failure
     ports:
       -   3001:3001
