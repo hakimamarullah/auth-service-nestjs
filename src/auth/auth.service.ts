@@ -26,8 +26,11 @@ export class AuthService {
     const token = new TokenResponse();
     try {
       const { username, password } = signInRequest;
-      const { responseData } =
-        await this.usersService.findByUsernameOrEmail(username);
+      const { responseData } = await this.usersService.findByUsernameOrEmail(
+        username,
+        username,
+        false,
+      );
       const {
         id,
         username: oriUsername,

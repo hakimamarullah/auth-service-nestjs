@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismadbService } from '../prismadb/prismadb.service';
@@ -14,9 +15,14 @@ import { BaseResponse } from '../dto/baseResponse.dto';
 
 @Injectable()
 export class UsersService {
+  private logger: Logger = new Logger(UsersService.name);
   constructor(private readonly prismadbService: PrismadbService) {}
 
-  async findByUsernameOrEmail(username: string, email?: string) {
+  async findByUsernameOrEmail(
+    username: string,
+    email?: string,
+    omitPass?: boolean,
+  ) {
     const user = await this.prismadbService.user.findFirst({
       where: {
         OR: [
@@ -47,7 +53,10 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return BaseResponse.getSuccessResponse<UserDto>(UserDto.build(user));
+
+    return BaseResponse.getSuccessResponse<UserDto>(
+      UserDto.build(user, omitPass),
+    );
   }
 
   async registerUser(userRegisterRequest: UserRegisterRequest) {
@@ -55,6 +64,7 @@ export class UsersService {
     if (!email || !password) {
       throw new BadRequestException('Email and password are required');
     }
+
     const user = await this.prismadbService.user.create({
       data: {
         email: email.toLowerCase(),
@@ -74,7 +84,7 @@ export class UsersService {
       },
     });
 
-    return BaseResponse.getSuccessResponse<UserDto>(UserDto.build(user));
+    return BaseResponse.getSuccessResponse<UserDto>(UserDto.build(user, true));
   }
 
   async updateUserRoles(userId: number, roleIds: number[]) {

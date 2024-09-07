@@ -4,7 +4,6 @@ import { CreateRoleRequest } from './dto/request/createRole.request';
 import { BaseResponse } from '../dto/baseResponse.dto';
 import { CachingService } from '../caching/caching.service';
 import { PathDto } from './dto/request/pathDto.request';
-import { convertPatternToRegExp } from '../common/utils/common.util';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventConstant } from '../events-listener/event-key.constant';
