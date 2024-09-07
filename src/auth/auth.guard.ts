@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('missing token');
     }
     try {
       const payload = await this.jwtService.verifyAsync(token);
@@ -46,6 +46,7 @@ export class AuthGuard implements CanActivate {
       this.checkIsAllowed(pathsSet, request.path);
       (request as any)['user'] = payload;
     } catch (error) {
+      this.logger.error(error);
       throw new UnauthorizedException(error.message);
     }
     return true;
