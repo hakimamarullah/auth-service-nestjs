@@ -14,7 +14,6 @@ export class UserDto {
     dto.email = user?.email;
     dto.enabled = user?.enabled;
     dto.phone = user?.phone;
-    dto.password = user?.password;
     dto.roles = user?.UserRoles?.map((userRole: any) => userRole.role?.name);
     return dto;
   }
