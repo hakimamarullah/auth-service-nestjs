@@ -25,6 +25,10 @@ export class UsersController {
     description: 'username or email',
   })
   async getUserInfo(@Param('username') username: string) {
-    return await this.userService.findByUsernameOrEmail(username);
+    return await this.userService.findByUsernameOrEmail(
+      username,
+      username,
+      true,
+    );
   }
 }
