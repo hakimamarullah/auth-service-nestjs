@@ -108,12 +108,12 @@ export const getPrismaError = (error: any): PrismaError => {
   switch (error.code) {
     case 'P2002':
       return {
-        message: `Duplicate entry for attribute ${error.meta.target} of ${error.meta?.modelName}`,
+        message: `Duplicate entry for attribute ${error?.meta?.target} of ${error.meta?.modelName}`,
         httpStatus: HttpStatus.CONFLICT,
       };
     case 'P2025':
       return {
-        message: `${error.meta.cause} Model: ${error.meta.modelName}`,
+        message: `Data Not Found`,
         httpStatus: HttpStatus.NOT_FOUND,
       };
     case 'P2003':
