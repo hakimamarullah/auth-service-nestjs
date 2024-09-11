@@ -2,7 +2,7 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInRequest } from './dto/request/signIn.request';
-import { TokenResponse } from './dto/response/token.response';
+import { LoginResponse } from './dto/response/login.response';
 import { BaseResponse } from '../dto/baseResponse.dto';
 import { isPasswordValid } from '../common/utils/common.util';
 import { CachingService } from '../caching/caching.service';
@@ -22,8 +22,8 @@ export class AuthService {
 
   async signIn(
     signInRequest: SignInRequest,
-  ): Promise<BaseResponse<TokenResponse>> {
-    const token = new TokenResponse();
+  ): Promise<BaseResponse<LoginResponse>> {
+    const loginResponse = new LoginResponse();
     try {
       const { username, password } = signInRequest;
       const { responseData } = await this.usersService.findByUsernameOrEmail(
@@ -43,7 +43,9 @@ export class AuthService {
       };
 
       if (this.passwordMatch(password, hashedPassword)) {
-        token.accessToken = this.jwtService.sign(payload);
+        loginResponse.accessToken = await this.jwtService.signAsync(payload);
+        loginResponse.username = oriUsername;
+        loginResponse.roles = roles;
         this.eventEmitter.emit(EventConstant.EventKey.UPDATE_LAST_LOGIN, id);
         await this.cachingService.setRoles(id, roles);
       }
@@ -51,7 +53,7 @@ export class AuthService {
       this.logger.error(error);
       throw new UnauthorizedException(error.message);
     }
-    return BaseResponse.getSuccessResponse<TokenResponse>(token);
+    return BaseResponse.getSuccessResponse<LoginResponse>(loginResponse);
   }
 
   private passwordMatch(password: any, hashedPassword: any) {

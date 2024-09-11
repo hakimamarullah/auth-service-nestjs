@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { UserRegisterRequest } from '../users/dto/request/userRegister.request';
 import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
 import { SignInRequest } from './dto/request/signIn.request';
-import { TokenResponse } from './dto/response/token.response';
+import { LoginResponse } from './dto/response/login.response';
 import { Public } from './decorator/public.decorator';
 
 @ApiTags('AuthController')
@@ -29,7 +29,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get access token' })
-  @ApiBaseResponse({ model: TokenResponse })
+  @ApiBaseResponse({ model: LoginResponse })
   @ApiBaseResponse({
     model: Object,
     statusCode: 401,
