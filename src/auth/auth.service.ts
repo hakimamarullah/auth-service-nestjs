@@ -44,8 +44,8 @@ export class AuthService {
 
       if (this.passwordMatch(password, hashedPassword)) {
         loginResponse.accessToken = await this.jwtService.signAsync(payload);
-        loginResponse.username = oriUsername;
-        loginResponse.roles = roles;
+        loginResponse.username = <string>oriUsername;
+        loginResponse.roles = roles ?? [];
         this.eventEmitter.emit(EventConstant.EventKey.UPDATE_LAST_LOGIN, id);
         await this.cachingService.setRoles(id, roles);
       }
