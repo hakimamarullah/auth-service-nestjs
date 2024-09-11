@@ -16,6 +16,12 @@ async function bootstrap() {
   );
 
   const server = app.getHttpServer();
+
+  app.enableCors({
+    origin: '*',
+    methods: ['*'],
+    allowedHeaders: ['*'],
+  });
   app.setGlobalPrefix(configService.get<string>('PROXY_PREFIX', ''));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new ErrorFilter());
