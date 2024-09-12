@@ -88,7 +88,11 @@ export class UsersService {
       },
     });
 
-    return BaseResponse.getResponse<UserDto>(UserDto.build(user, true));
+    return BaseResponse.getResponse<UserDto>(
+      UserDto.build(user, true),
+      undefined,
+      201,
+    );
   }
 
   async updateUserRoles(userId: number, roleIds: number[]) {
