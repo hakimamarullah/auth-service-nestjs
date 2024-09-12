@@ -14,6 +14,7 @@ import {
   CachingModule,
   CachingService,
 } from '@hakimamarullah/commonbundle-nestjs';
+import { HealthcheckModule } from './healthcheck/healthcheck.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import {
     RolesModule,
     CachingModule,
     EventsListenerModule,
+    HealthcheckModule,
   ],
   providers: [
     CachingService,
