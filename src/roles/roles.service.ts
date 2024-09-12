@@ -43,28 +43,27 @@ export class RolesService implements OnModuleInit {
     });
     return BaseResponse.getResponse<any>(role);
   }
-
   async loadAllPaths<T>(
     transformer?: (data: string) => Promise<T>,
   ): Promise<{ [roleName: string]: T[] }> {
-    // Fetch all roles with the given names and include PathAllowed
     const roles = await this.prismadbService.role.findMany({
-      include: { PathAllowed: true }, // Include the related PathAllowed records
+      include: { PathAllowed: true },
     });
 
-    // Map roles to their allowed paths
-    return roles.reduce(
-      (acc, role: any) => {
-        acc[role.name] = role.PathAllowed.map(async (pathAllowed: any) => {
+    const result: { [roleName: string]: T[] } = {};
+
+    for (const role of roles) {
+      result[role.name] = await Promise.all(
+        (role as any).PathAllowed.map(async (pathAllowed: any) => {
           if (transformer) {
-            return await transformer(pathAllowed.path);
+            return transformer(pathAllowed.path);
           }
-          return pathAllowed.path;
-        });
-        return acc;
-      },
-      {} as { [roleName: string]: T[] },
-    );
+          return pathAllowed.path as T;
+        }),
+      );
+    }
+
+    return result;
   }
 
   async addAllPathToRole(username: string, pathDto: PathDto) {

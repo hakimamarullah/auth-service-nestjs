@@ -25,6 +25,8 @@ model User {
   lastLogin DateTime?   @default(now()) @map("last_login")
   UserRoles UserRoles[]
 
+  @@index([username])
+  @@index([email])
   @@map("users")
 }
 
