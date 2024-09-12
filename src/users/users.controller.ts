@@ -7,7 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UserDto } from './dto/user.dto';
-import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
+import { ApiBaseResponse } from '@hakimamarullah/commonbundle-nestjs';
 
 @ApiBearerAuth()
 @ApiTags('UserController')

@@ -1,9 +1,11 @@
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { JwtConfigService } from './jwt-config.service';
-import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
 import { JwtConfigResponse } from './dto/response/jwtConfig.response';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { BaseResponse } from '../dto/baseResponse.dto';
+import {
+  ApiBaseResponse,
+  BaseResponse,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @ApiBearerAuth()
 @ApiTags('JWT Utility')
@@ -17,6 +19,6 @@ export class JwtController {
   @HttpCode(HttpStatus.OK)
   async getJwtConfig() {
     const data = this.jwtConfigService.loadJwtOptions() as JwtConfigResponse;
-    return BaseResponse.getSuccessResponse(data);
+    return BaseResponse.getResponse(data);
   }
 }

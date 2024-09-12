@@ -5,11 +5,11 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { JwtModule } from '@nestjs/jwt';
-import { CachingService } from '../caching/caching.service';
 
 import { JwtConfigService } from './jwt-config.service';
 import { RolesService } from '../roles/roles.service';
 import { JwtController } from './jwt.controller';
+import { CachingService } from '@hakimamarullah/commonbundle-nestjs';
 
 @Module({
   providers: [

@@ -3,11 +3,13 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInRequest } from './dto/request/signIn.request';
 import { LoginResponse } from './dto/response/login.response';
-import { BaseResponse } from '../dto/baseResponse.dto';
-import { isPasswordValid } from '../common/utils/common.util';
-import { CachingService } from '../caching/caching.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventConstant } from '../events-listener/event-key.constant';
+import {
+  BaseResponse,
+  CachingService,
+  isPasswordValid,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +55,7 @@ export class AuthService {
       this.logger.error(error);
       throw new UnauthorizedException(error.message);
     }
-    return BaseResponse.getSuccessResponse<LoginResponse>(loginResponse);
+    return BaseResponse.getResponse<LoginResponse>(loginResponse);
   }
 
   private passwordMatch(password: any, hashedPassword: any) {

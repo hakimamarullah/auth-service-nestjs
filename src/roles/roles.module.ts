@@ -3,8 +3,10 @@ import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { PrismadbModule } from '../prismadb/prismadb.module';
-import { CachingService } from '../caching/caching.service';
-import { CachingModule } from '../caching/caching.module';
+import {
+  CachingModule,
+  CachingService,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Module({
   providers: [RolesService, PrismadbService, CachingService],

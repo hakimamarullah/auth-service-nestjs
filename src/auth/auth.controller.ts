@@ -3,10 +3,10 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { UserRegisterRequest } from '../users/dto/request/userRegister.request';
-import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
 import { SignInRequest } from './dto/request/signIn.request';
 import { LoginResponse } from './dto/response/login.response';
 import { Public } from './decorator/public.decorator';
+import { ApiBaseResponse } from '@hakimamarullah/commonbundle-nestjs';
 
 @ApiTags('AuthController')
 @Public()

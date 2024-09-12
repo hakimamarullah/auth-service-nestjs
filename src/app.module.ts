@@ -4,14 +4,16 @@ import { UsersModule } from './users/users.module';
 import { PrismadbModule } from './prismadb/prismadb.module';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
-import { CachingModule } from './caching/caching.module';
 import { EventsListenerModule } from './events-listener/events-listener.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtConfigService } from './auth/jwt-config.service';
-import { CachingService } from './caching/caching.service';
 import { RolesService } from './roles/roles.service';
+import {
+  CachingModule,
+  CachingService,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Module({
   imports: [

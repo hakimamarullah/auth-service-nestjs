@@ -1,6 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -10,10 +12,12 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC } from './decorator/public.decorator';
-import { CachingService } from '../caching/caching.service';
 import { RolesService } from '../roles/roles.service';
-import { CacheConstant } from '../caching/cache.constant';
-import { convertPatternToRegExp } from '../common/utils/common.util';
+import {
+  CacheConstant,
+  CachingService,
+  convertPatternToRegExp,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -47,6 +51,9 @@ export class AuthGuard implements CanActivate {
       (request as any)['user'] = payload;
     } catch (error) {
       this.logger.error(error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new UnauthorizedException(error.message);
     }
     return true;
@@ -102,20 +109,10 @@ export class AuthGuard implements CanActivate {
     const anyMatchedPath = Array.from(pathPatternSet).some((pattern) =>
       pattern.test(path),
     );
-    if (!pathPatternSet) {
-      throw new UnauthorizedException(
+    if (!pathPatternSet?.size || !anyMatchedPath) {
+      throw new HttpException(
         'You are not allowed to access this path',
-      );
-    }
-    if (!pathPatternSet.size) {
-      throw new UnauthorizedException(
-        'You are not allowed to access this path',
-      );
-    }
-
-    if (!anyMatchedPath) {
-      throw new UnauthorizedException(
-        'You are not allowed to access this path',
+        HttpStatus.FORBIDDEN,
       );
     }
     return true;

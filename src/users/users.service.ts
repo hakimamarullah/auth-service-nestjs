@@ -8,10 +8,10 @@ import { PrismadbService } from '../prismadb/prismadb.service';
 import { UserDto } from './dto/user.dto';
 import { UserRegisterRequest } from './dto/request/userRegister.request';
 import {
+  BaseResponse,
   extractUsernameFromEmail,
   hashPassword,
-} from '../common/utils/common.util';
-import { BaseResponse } from '../dto/baseResponse.dto';
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Injectable()
 export class UsersService {
@@ -23,22 +23,28 @@ export class UsersService {
     email?: string,
     omitPass?: boolean,
   ) {
+    const conditions: any[] = [
+      {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    ];
+
+    // Add the email condition only if email is provided
+    if (email) {
+      conditions.push({
+        email: {
+          equals: email,
+          mode: 'insensitive',
+        },
+      });
+    }
+
     const user = await this.prismadbService.user.findFirst({
       where: {
-        OR: [
-          {
-            username: {
-              equals: username,
-              mode: 'insensitive',
-            },
-          },
-          {
-            email: {
-              equals: email,
-              mode: 'insensitive',
-            },
-          },
-        ],
+        OR: conditions,
         enabled: true,
       },
       include: {
@@ -54,9 +60,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    return BaseResponse.getSuccessResponse<UserDto>(
-      UserDto.build(user, omitPass),
-    );
+    return BaseResponse.getResponse<UserDto>(UserDto.build(user, omitPass));
   }
 
   async registerUser(userRegisterRequest: UserRegisterRequest) {
@@ -84,7 +88,7 @@ export class UsersService {
       },
     });
 
-    return BaseResponse.getSuccessResponse<UserDto>(UserDto.build(user, true));
+    return BaseResponse.getResponse<UserDto>(UserDto.build(user, true));
   }
 
   async updateUserRoles(userId: number, roleIds: number[]) {
@@ -105,7 +109,7 @@ export class UsersService {
         },
       },
     });
-    return BaseResponse.getSuccessResponse<any>(user);
+    return BaseResponse.getResponse<any>(user);
   }
 
   async disableUser(userId: number) {
@@ -117,7 +121,7 @@ export class UsersService {
         enabled: false,
       },
     });
-    return BaseResponse.getSuccessResponse<any>(user);
+    return BaseResponse.getResponse<any>(user);
   }
 
   async updateLastLogin(userId: number) {

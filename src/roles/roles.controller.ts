@@ -20,12 +20,14 @@ import {
 } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
-import { ApiBaseResponse } from '../common/decorators/swagger.decorator';
 import { PathDto } from './dto/request/pathDto.request';
 import { Request } from 'express';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
-import { getUsername } from '../common/utils/common.util';
-import { BaseResponse } from '../dto/baseResponse.dto';
+import {
+  ApiBaseResponse,
+  BaseResponse,
+  getUsername,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @ApiTags('RolesController')
 @ApiBearerAuth()
@@ -73,8 +75,10 @@ export class RolesController {
   @ApiOperation({ summary: 'Get All Paths for all roles' })
   @ApiBaseResponse({ model: Map<string, any> })
   async getPathsForAllRoles() {
-    const data = await this.rolesService.loadAllPaths((d) => d);
-    return BaseResponse.getSuccessResponse<{ [p: string]: string[] }>(data);
+    const data = await this.rolesService.loadAllPaths((d) =>
+      Promise.resolve(d),
+    );
+    return BaseResponse.getResponse<{ [p: string]: string[] }>(data);
   }
 
   @Get('user/:userId')

@@ -1,12 +1,14 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { CreateRoleRequest } from './dto/request/createRole.request';
-import { BaseResponse } from '../dto/baseResponse.dto';
-import { CachingService } from '../caching/caching.service';
 import { PathDto } from './dto/request/pathDto.request';
 import { RoleSimpleResponse } from './dto/response/roleSimple.response';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventConstant } from '../events-listener/event-key.constant';
+import {
+  BaseResponse,
+  CachingService,
+} from '@hakimamarullah/commonbundle-nestjs';
 
 @Injectable()
 export class RolesService implements OnModuleInit {
@@ -22,7 +24,7 @@ export class RolesService implements OnModuleInit {
       data: roleDtos.map((role) => ({ ...role, createBy: username })),
     });
 
-    return BaseResponse.getResponseCreated<any>(createdRoles);
+    return BaseResponse.getResponse<any>(createdRoles, undefined, 201);
   }
 
   async getAllRoles() {
@@ -30,7 +32,7 @@ export class RolesService implements OnModuleInit {
       include: { PathAllowed: true },
     });
     const data = roles.map((role: any) => RoleSimpleResponse.build(role));
-    return BaseResponse.getSuccessResponse<RoleSimpleResponse[]>(data);
+    return BaseResponse.getResponse<RoleSimpleResponse[]>(data);
   }
 
   async deleteRoleById(roleId: number) {
@@ -39,11 +41,11 @@ export class RolesService implements OnModuleInit {
         id: roleId,
       },
     });
-    return BaseResponse.getSuccessResponse<any>(role);
+    return BaseResponse.getResponse<any>(role);
   }
 
   async loadAllPaths<T>(
-    transformer?: (data: any) => T,
+    transformer?: (data: string) => Promise<T>,
   ): Promise<{ [roleName: string]: T[] }> {
     // Fetch all roles with the given names and include PathAllowed
     const roles = await this.prismadbService.role.findMany({
@@ -53,9 +55,9 @@ export class RolesService implements OnModuleInit {
     // Map roles to their allowed paths
     return roles.reduce(
       (acc, role: any) => {
-        acc[role.name] = role.PathAllowed.map((pathAllowed: any) => {
+        acc[role.name] = role.PathAllowed.map(async (pathAllowed: any) => {
           if (transformer) {
-            return transformer(pathAllowed.path);
+            return await transformer(pathAllowed.path);
           }
           return pathAllowed.path;
         });
@@ -77,7 +79,7 @@ export class RolesService implements OnModuleInit {
       },
     });
     this.emitter.emit(EventConstant.EventKey.RELOAD_ALL_PATHS);
-    return BaseResponse.getSuccessResponse('Success');
+    return BaseResponse.getResponse('Success');
   }
 
   async getUserRoles(userId: number) {
@@ -90,7 +92,7 @@ export class RolesService implements OnModuleInit {
       },
     });
     const data = roles.map((role: any) => role.role?.name);
-    return BaseResponse.getSuccessResponse(data);
+    return BaseResponse.getResponse(data);
   }
 
   async onModuleInit(): Promise<any> {

@@ -3,7 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { UsersService } from '../users/users.service';
 import { EventConstant } from './event-key.constant';
 import { RolesService } from '../roles/roles.service';
-import { convertPatternToRegExp } from '../common/utils/common.util';
+import { convertPatternToRegExp } from '@hakimamarullah/commonbundle-nestjs';
 
 @Injectable()
 export class EventsListenerService {

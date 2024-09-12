@@ -4,7 +4,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersService } from '../users/users.service';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { RolesService } from '../roles/roles.service';
-import { CachingService } from '../caching/caching.service';
+import { CachingService } from '@hakimamarullah/commonbundle-nestjs';
 
 @Module({
   providers: [
