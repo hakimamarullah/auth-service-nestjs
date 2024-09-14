@@ -45,9 +45,10 @@ export class AuthService {
       };
 
       if (this.passwordMatch(password, hashedPassword)) {
-        loginResponse.accessToken = await this.jwtService.signAsync(payload);
+        loginResponse.accessToken = await this.generateToken(payload, roles);
         loginResponse.username = <string>oriUsername;
         loginResponse.roles = roles ?? [];
+
         this.eventEmitter.emit(EventConstant.EventKey.UPDATE_LAST_LOGIN, id);
         await this.cachingService.setRoles(id, roles);
       }
@@ -67,5 +68,14 @@ export class AuthService {
       throw new UnauthorizedException('Password invalid');
     }
     return true;
+  }
+
+  private async generateToken(payload: any, roles?: string[]) {
+    if (roles?.includes('SYSTEM')) {
+      return await this.jwtService.signAsync(payload, {
+        expiresIn: '365d',
+      });
+    }
+    return await this.jwtService.signAsync(payload);
   }
 }
