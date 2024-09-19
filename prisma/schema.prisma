@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ResetTokenStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
 model User {
   id        Int         @id() @default(autoincrement())
   username  String      @unique @db.VarChar(30)
@@ -68,4 +74,16 @@ model PathAllowed {
   @@id([roleId, path])
   @@index([path])
   @@map("path_allowed")
+}
+
+model ResetToken {
+  id        Int              @id() @default(autoincrement())
+  token     String           @unique
+  email     String           @db.VarChar(60)
+  status    ResetTokenStatus @default(ACTIVE)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @default(now()) @updatedAt() @map("updated_at")
+
+  @@index([email])
+  @@map("reset_token")
 }
