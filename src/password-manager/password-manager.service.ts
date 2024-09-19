@@ -33,9 +33,10 @@ export class PasswordManagerService {
         token,
       },
     });
-    const params = new Map();
-    params.set('RESET_LINK', url);
-    params.set('EMAIL', email);
+    const params = {
+      RESET_LINK: url,
+      EMAIL: email,
+    };
     const subject = 'Password Reset Request';
     const html = this.htmlTemplateService.fillTemplate(
       'reset_password',
