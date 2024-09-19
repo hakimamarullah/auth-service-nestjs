@@ -44,7 +44,7 @@ export class PasswordManagerService {
 
     const payload = {
       subject,
-      recipients: [''],
+      recipients: [email],
       textBody: html,
       isHtml: true,
     };
