@@ -60,13 +60,19 @@ export class PasswordManagerService {
   }
 
   async validatePasswordResetToken(token: string) {
-    const data = (await this.prismaService.resetToken.findFirstOrThrow({
+    const data = (await this.prismaService.resetToken.findFirst({
       where: {
         token,
-        status: ResetTokenStatus.ACTIVE,
       },
     })) as any;
 
+    if (data?.status !== ResetTokenStatus.ACTIVE) {
+      return BaseResponse.getResponse(
+        { valid: false, email: data?.email },
+        'Token Is Not Active. Please request token again',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const createdAt = data.createdAt;
 
     const diff = Date.now() - createdAt.getTime();
@@ -95,11 +101,7 @@ export class PasswordManagerService {
     const { responseCode, responseData } =
       await this.validatePasswordResetToken(req.token);
     if (responseCode !== 200) {
-      return BaseResponse.getResponse(
-        'Please request token again',
-        'Invalid token',
-        400,
-      );
+      return BaseResponse.getResponse('xx', 'Invalid token', 400);
     }
 
     const hashedNewPassword = hashPassword(req.newPassword);
