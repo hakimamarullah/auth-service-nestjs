@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { PrismadbService } from '../prismadb/prismadb.service';
 import { RolesService } from '../roles/roles.service';
 import { CachingService } from '@hakimamarullah/commonbundle-nestjs';
+import { ProducerService } from '@hakimamarullah/event-producer';
 
 @Module({
   providers: [
@@ -13,6 +14,7 @@ import { CachingService } from '@hakimamarullah/commonbundle-nestjs';
     PrismadbService,
     RolesService,
     CachingService,
+    ProducerService,
   ],
   imports: [EventEmitterModule.forRoot({ global: true })],
   exports: [EventsListenerService],

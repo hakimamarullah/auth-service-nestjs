@@ -12,7 +12,7 @@ import {
 export class UserRegisterRequest {
   @ApiProperty()
   @IsNotEmpty({ message: 'Email is required' })
-  @IsEmail()
+  @IsEmail({}, { message: 'Email must be a valid email address' })
   email: string;
 
   @ApiProperty()
